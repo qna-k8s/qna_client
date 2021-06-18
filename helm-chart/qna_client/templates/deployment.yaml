@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "qna_client.deployment_name" . }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- toYaml .Values.deployment.labels | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- toYaml .Values.deployment.labels | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ include "qna_client.container_name" . }}
+        image: {{ .Values.imageName | default "trivedhaudurthi/qna_client:v1" }}
+        imagePullPolicy: IfNotPresent

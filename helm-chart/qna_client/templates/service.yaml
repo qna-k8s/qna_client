@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "qna_client.service_name" . }}
+spec:
+  selector:
+    {{- toYaml .Values.service.selectoLabels | nindent 4 }}
+  ports:
+  - port: {{ .Values.service.port }}
+    name: http
+    nodePort: {{ .Values.service.NodePort }}
+  type: NodePort

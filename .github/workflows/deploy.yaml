@@ -1,0 +1,53 @@
+name: Deploy "qna-client" microservice to cluster
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  build_docker_image:
+    name: Build and push docker image to registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '12'
+      - name: Build the application
+        run: npm run build
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build and push the image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: trivedhaudurthi/qna_client:v${{ github.run_number }}
+  deploy_chart_to_cluster:
+    name: Deploy helm chart to cluster
+    runs-on: ubuntu-latest
+    needs: build_docker_image
+    steps:
+      - name: Install packages
+        run: |
+          sudo apt-get update
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+      - name: Configure Kubectl
+        run: |
+          aws eks update-kubeconfig --name qna_cluster
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+      - name: Install helm charts
+        run: |
+            ./deploy_chart.sh
+        env:
+          imageName: trivedhaudurthi/qna_client:v${{ github.run_number }}

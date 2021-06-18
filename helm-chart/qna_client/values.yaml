@@ -1,0 +1,15 @@
+
+replicas: 1
+
+deployment: {
+  "labels": { "app": "qna_client" },
+  "containerName": "qna-client",
+  "deploymentName": "qna-client-deployment"
+}
+
+service: {
+  "name" : "qna-client-service",
+  "selectoLabels": { "app": "qna_client" },
+  "port": 3000,
+  "NodePort": 30020
+}
