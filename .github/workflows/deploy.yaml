@@ -27,6 +27,7 @@ jobs:
       - name: Build and push the image
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: true
           tags: trivedhaudurthi/qna_client:v${{ github.run_number }}
   deploy_chart_to_cluster:
