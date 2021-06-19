@@ -51,6 +51,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Install helm charts
         run: |
+            chmod 777 ./deploy_chart.sh
             ./deploy_chart.sh
         env:
           imageName: trivedhaudurthi/qna_client:v${{ github.run_number }}
