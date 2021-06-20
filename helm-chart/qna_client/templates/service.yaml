@@ -8,5 +8,4 @@ spec:
   ports:
   - port: {{ .Values.service.port }}
     name: http
-    nodePort: {{ .Values.service.NodePort }}
-  type: NodePort
+  type: LoadBalancer

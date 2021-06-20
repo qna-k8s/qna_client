@@ -4,7 +4,9 @@ replicas: 1
 deployment: {
   "labels": { "app": "qna_client" },
   "containerName": "qna-client",
-  "deploymentName": "qna-client-deployment"
+  "deploymentName": "qna-client-deployment",
+  "memory_request": "50Mi",
+  "cpu_request":"200m"
 }
 
 service: {
@@ -13,3 +15,13 @@ service: {
   "port": 3000,
   "NodePort": 30020
 }
+
+probes: 
+  container_port: 3000
+  port_name: liveness-port
+  liveness_path: /api/v1/question
+  liveness_failure_threshold: 2
+  liveness_period_seconds: 10
+  startup_failure_threshold: 30
+  startup_period_seconds: 10
+  readiness_period_seconds: 20

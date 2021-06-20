@@ -16,3 +16,29 @@ spec:
       - name: {{ include "qna_client.container_name" . }}
         image: {{ .Values.imageName | default "trivedhaudurthi/qna_client:v1" }}
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: {{ .Values.deployment.memory_request }}
+            cpu: {{ .Values.deployment.cpu_request }}
+        ports:
+          - name: {{ .Values.probes.port_name }}
+            containerPort: {{ .Values.probes.container_port }}
+            hostPort: {{ .Values.probes.container_port }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.probes.liveness_path }}
+            port: {{ .Values.probes.port_name }}
+          failureThreshold: {{ .Values.probes.liveness_failure_threshold }}
+          periodSeconds: {{ .Values.probes.liveness_period_seconds }}
+        startupProbe:
+          httpGet:
+            path: {{ .Values.probes.liveness_path }}
+            port: {{ .Values.probes.port_name }}
+          failureThreshold: {{ .Values.probes.startup_failure_threshold }}
+          periodSeconds: {{ .Values.probes.startup_period_seconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.probes.liveness_path }}
+            port: {{ .Values.probes.port_name }}
+          periodSeconds: {{ .Values.probes.readiness_period_seconds }}
+          
