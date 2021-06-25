@@ -19,7 +19,7 @@ service: {
 probes: 
   container_port: 3000
   port_name: liveness-port
-  liveness_path: /api/v1/question
+  liveness_path: /api/question
   liveness_failure_threshold: 2
   liveness_period_seconds: 10
   startup_failure_threshold: 30
